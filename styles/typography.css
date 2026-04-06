@@ -1,7 +1,264 @@
+:root {
+  --primary-text-color: #000000;
+  --title-text-color: #121212;
+  --accent-text-color: #2e3646;
+  --background-part: #f4eae0;
+  --background-button: #3e2526;
+  --white-text-color: #ffffff;
+  --grey-text-color: #5f6d7e;
+}
+
 .h1 {
+  font-family: "Playfair Display", serif;
   font-size: 36px;
   font-weight: 500;
-  font-style: normal;
   line-height: 100%;
-  letter-spacing: calc(36px * -0.001);
+  letter-spacing: -0.01em;
+  color: var(--title-text-color);
+}
+
+.h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 123.5%;
+  letter-spacing: 0em;
+  text-transform: uppercase;
+  color: var(--title-text-color);
+}
+
+.h3 {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 118.8%;
+  letter-spacing: 0em;
+  color: var(--title-text-color);
+}
+
+.h4 {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 158.3%;
+  letter-spacing: 0em;
+  color: var(--title-text-color);
+}
+
+.h5 {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 123.5%;
+  letter-spacing: 0em;
+  text-transform: uppercase;
+  color: var(--title-text-color);
+}
+
+.h6 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 123.5%;
+  letter-spacing: 0em;
+  text-transform: uppercase;
+  color: var(--title-text-color);
+}
+
+.h7 {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 116.7%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.h8 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 116.7%;
+  letter-spacing: 0em;
+  text-transform: uppercase;
+  color: var(--title-text-color);
+}
+
+.h9 {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 158.3%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.h10 {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 190.9%;
+  letter-spacing: -0.01em;
+  vertical-align: middle;
+  text-transform: uppercase;
+  color: var(--primary-text-color);
+}
+
+.h11 {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 133.3%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--primary-text-color);
+}
+
+.h12 {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.h13 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--title-text-color);
+}
+
+.p1 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 146%;
+  letter-spacing: -0.01em;
+  color: var(--accent-text-color);
+}
+
+.p2 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 160%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p3 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p4 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 133.3%;
+  letter-spacing: 0em;
+  color: var(--title-text-color);
+}
+
+.p5 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 160%;
+  letter-spacing: 0em;
+  color: var(--accent-text-color);
+}
+
+.p6 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p7 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 186.7%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p8 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 137.5%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p9 {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.01em;
+  color: var(--grey-text-color);
+  text-align: center;
+}
+
+.p10 {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 136.4%;
+  letter-spacing: -0.01em;
+  color: var(--primary-text-color);
+}
+
+.p11 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--primary-text-color);
+}
+
+.p12 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0em;
+  color: var(--title-text-color);
+}
+
+.btn {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 111.1%;
+  letter-spacing: -0.01em;
+  color: var(--white-text-color);
+  background-color: var(--background-button);
+}
+
+.btn1 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 122.2%;
+  letter-spacing: -0.01em;
+  vertical-align: middle;
+  color: var(--white-text-color);
+  background-color: var(--background-button);
 }

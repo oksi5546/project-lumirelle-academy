@@ -17,16 +17,27 @@
       rel="stylesheet"
     />
     <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
       integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"
     />
+    <!-- 
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css"
+    /> -->
 
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/typography.css" />
@@ -75,7 +86,7 @@
 
         <a class="hero__course-link" href="/">
           <img
-            class="hero__course-btn"
+            class="hero__course-img"
             src="public/images/button.svg"
             alt="link to choose a course"
             width="110"
@@ -83,7 +94,7 @@
           />
         </a>
 
-        <p class="hero__text">
+        <p class="hero__text p1">
           Welcome to the Classic Eyelash Extension Course. In this course you
           will learn about the process of eyelash extensions, the materials used
           for eyelash extensions, and the basic rules of working in the lash
@@ -92,30 +103,31 @@
       </section>
 
       <section class="about">
-        <h2 class="about__title">About:</h2>
+        <h2 class="about__title h2">About:</h2>
 
-        <p class="about__text">
+        <p class="about__text p2">
           Our training is an accessible and convenient way to learn professional
           methods and techniques for creating a professional eyelash look.
         </p>
 
-        <p class="about__text">
+        <p class="about__text p2">
           You will receive detailed instructions from experienced experts to
           achieve flawless results.
         </p>
 
-        <p class="about__text">
+        <p class="about__text p2">
           The course includes practical exercises on live models, allowing you
           to practice the skills in real time.
         </p>
 
-        <p class="about__text">
+        <p class="about__text p2">
           With additional materials on eyelash extension care, your clients will
           appreciate tne longevity of your work.
         </p>
 
         <div class="about__thumb">
           <img
+            class="about__img"
             src="public/images/about.png"
             alt="photo eyelashs"
             width="375"
@@ -125,20 +137,22 @@
       </section>
 
       <section class="training">
-        <h2 class="training__title">Online training</h2>
+        <h2 class="training__title h3">Online training</h2>
 
-        <h3 class="training__subtitle">“Classic Lash Extensions”</h3>
+        <h3 class="training__subtitle h4">“Classic Lash Extensions”</h3>
 
-        <p class="training__meta">$290.00</p>
+        <p class="training__meta training__meta--accent p3">$290.00</p>
 
-        <p class="training__meta">9 lessons</p>
+        <p class="training__meta p3">9 lessons</p>
 
-        <p class="training__meta">0 hours of video content</p>
+        <p class="training__meta p3">0 hours of video content</p>
 
-        <p class="training__meta">Approximate time: 7 hours</p>
+        <p class="training__meta training__meta--my p4">
+          Approximate time: 7 hours
+        </p>
 
         <ul class="training__list">
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -147,7 +161,7 @@
             What are eyelash extensions?
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -156,7 +170,7 @@
             Parameters of the artificial lashes.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -165,7 +179,7 @@
             Materials and tools for eyelash extension.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -174,7 +188,7 @@
             Eye characteristics and different styles of lash extension.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -183,7 +197,7 @@
             Work with adhesive and correct lash application.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -192,7 +206,7 @@
             Health and safety.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -201,7 +215,7 @@
             Video of the lash application process.
           </li>
 
-          <li class="training__item">
+          <li class="training__item p5">
             <img
               src="public/icons/check.svg"
               alt="check"
@@ -211,10 +225,11 @@
           </li>
         </ul>
 
-        <button type="button" class="training__btn">Buy $290.00</button>
+        <a href="#registration" class="course__btn btn">Buy $290.00</a>
 
         <div class="training__thumb">
           <img
+            class="training__img"
             src="public/images/training.png"
             alt="photo eyelashs"
             width="375"
@@ -224,53 +239,55 @@
       </section>
 
       <section class="details">
-        <h2 class="details__title">
+        <h2 class="details__title h5">
           The training course will become indispensable if:
         </h2>
 
-        <p class="details__text">
-          You aspire to become an expert in your field and achieve a high level
-          of professional competence.
-        </p>
+        <div class="details__container">
+          <p class="details__text p6">
+            You aspire to become an expert in your field and achieve a high
+            level of professional competence.
+          </p>
 
-        <p class="details__text">
-          You want to expand your knowledge and skills to gain new opportunities
-          are career growth.
-        </p>
+          <p class="details__text p6">
+            You want to expand your knowledge and skills to gain new
+            opportunities are career growth.
+          </p>
 
-        <p class="details__text">
-          You value innovative approaches and cutting-edge practices in your
-          work.
-        </p>
+          <p class="details__text p6">
+            You value innovative approaches and cutting-edge practices in your
+            work.
+          </p>
 
-        <p class="details__text">
-          You appreciate efficient learning and rapid progress in acquiring new
-          knowledge.
-        </p>
+          <p class="details__text p6">
+            You appreciate efficient learning and rapid progress in acquiring
+            new knowledge.
+          </p>
 
-        <p class="details__text">
-          You aim to enhance your skills and ensure a high level of professional
-          confidence.
-        </p>
+          <p class="details__text p6">
+            You aim to enhance your skills and ensure a high level of
+            professional confidence.
+          </p>
 
-        <p class="details__text">
-          You wish to stay up-to-date with the latest trends and be capable of
-          implementing them into practice to achieve success.
-        </p>
+          <p class="details__text p6">
+            You wish to stay up-to-date with the latest trends and be capable of
+            implementing them into practice to achieve success.
+          </p>
 
-        <p class="details__text">
-          You seek guidance from experienced mentors and industry professionals
-          who can provide valuable insights and practical tips.
-        </p>
+          <p class="details__text p6">
+            You seek guidance from experienced mentors and industry
+            professionals who can provide valuable insights and practical tips.
+          </p>
 
-        <p class="details__text">
-          You are committed to investing time and effort in your personal and
-          professional development, as this course will offer a wealth of
-          resources and opportunities for growth.
-        </p>
-
+          <p class="details__text p6">
+            You are committed to investing time and effort in your personal and
+            professional development, as this course will offer a wealth of
+            resources and opportunities for growth.
+          </p>
+        </div>
         <div class="details__thumb">
           <img
+            class="details__img"
             src="public/images/details.png"
             alt="photo eyelashs"
             width="315"
@@ -280,114 +297,127 @@
       </section>
 
       <section class="after">
-        <h2 class="after__title">AFTER THE COURSE YOU WILL BE ABLE TO:</h2>
+        <h2 class="after__title h5">AFTER THE COURSE YOU WILL BE ABLE TO:</h2>
 
-        <p class="after__text">
-          Confidently perform stunning eyelash extensions.
-        </p>
+        <div class="after__container">
+          <p class="after__text p6">
+            Confidently perform stunning eyelash extensions.
+          </p>
 
-        <p class="after__text">
-          Implement various styles for unique and impactful eyelash makeovers.
-        </p>
+          <p class="after__text p6">
+            Implement various styles for unique and impactful eyelash makeovers.
+          </p>
 
-        <p class="after__text">
-          Select and apply lashes based on clients' needs.
-        </p>
+          <p class="after__text p6">
+            Select and apply lashes based on clients' needs.
+          </p>
 
-        <p class="after__text">
-          Stop wasting money on trying multiple glues & products
-        </p>
+          <p class="after__text p6">
+            Stop wasting money on trying multiple glues & products
+          </p>
 
-        <p class="after__text">
-          Diagnose and address potential issues related to eyelash extensions.
-        </p>
+          <p class="after__text p6">
+            Diagnose and address potential issues related to eyelash extensions.
+          </p>
 
-        <p class="after__text">
-          Follow best practices for sterilization and hygiene.
-        </p>
+          <p class="after__text p6">
+            Follow best practices for sterilization and hygiene.
+          </p>
 
-        <p class="after__text">
-          Ensure client comfort during the extension process.
-        </p>
+          <p class="after__text p6">
+            Ensure client comfort during the extension process.
+          </p>
 
-        <p class="after__text">
-          Run a successful eyelash extension business with a loyal customer
-          base.
-        </p>
+          <p class="after__text p6">
+            Run a successful eyelash extension business with a loyal customer
+            base.
+          </p>
 
-        <p class="after__text">
-          Acquire skills in identifying different face shapes for the perfect
-          eyelash design.
-        </p>
+          <p class="after__text p6">
+            Acquire skills in identifying different face shapes for the perfect
+            eyelash design.
+          </p>
 
-        <p class="after__text">
-          Establish a professional reputation with satisfied clients'
-          recommendations.
-        </p>
-
-        <div class="after__thumb">
-          <img
-            src="public/images/after1.png"
-            alt="photo eyelashs"
-            width="275"
-            height="127"
-          />
+          <p class="after__text p6">
+            Establish a professional reputation with satisfied clients'
+            recommendations.
+          </p>
         </div>
+        <div class="thumbs-wrap">
+          <div class="thumbs-wrap__item">
+            <img
+              class="thumbs-wrap__img"
+              src="public/images/after1.png"
+              alt="photo eyelashs"
+              width="275"
+              height="127"
+            />
+          </div>
 
-        <div class="after__thumb">
-          <img
-            src="public/images/after2.png"
-            alt="photo eyelashs"
-            width="272"
-            height="127"
-          />
+          <div class="thumbs-wrap__item">
+            <img
+              class="thumbs-wrap__img"
+              src="public/images/after2.png"
+              alt="photo eyelashs"
+              width="272"
+              height="127"
+            />
+          </div>
         </div>
       </section>
 
       <section class="bonus">
         <ul class="bonus__list">
           <li class="bonus__item">
-            <img
-              src="public/icons/icon1.svg"
-              alt="message icon"
-              class="bonus__icon"
-            />
+            <div class="bonus__wrap-icon">
+              <img
+                src="public/icons/icon1.svg"
+                alt="message icon"
+                class="bonus__icon"
+              />
+            </div>
 
-            <p class="bonus__text">
+            <p class="bonus__text p10">
               Training is guided by a certified, practising specialist.
             </p>
           </li>
 
           <li class="bonus__item">
-            <img
-              src="public/icons/icon2.svg"
-              alt="calendar icon"
-              class="bonus__icon"
-            />
+            <div class="bonus__wrap-icon">
+              <img
+                src="public/icons/icon2.svg"
+                alt="calendar icon"
+                class="bonus__icon"
+              />
+            </div>
 
-            <p class="bonus__text">Flexible training schedule.</p>
+            <p class="bonus__text p10">Flexible training schedule.</p>
           </li>
 
           <li class="bonus__item">
-            <img
-              src="public/icons/icon3.svg"
-              alt="freeicon"
-              class="bonus__icon"
-            />
+            <div class="bonus__wrap-icon">
+              <div class="bonus__wrap-icon">
+                <img
+                  src="public/icons/icon3.svg"
+                  alt="freeicon"
+                  class="bonus__icon"
+                />
+              </div>
+            </div>
 
-            <p class="bonus__text">Video of the lash application process.</p>
+            <p class="bonus__text p10">Free consultation after training.</p>
           </li>
         </ul>
       </section>
 
       <section class="help">
-        <h2 class="help__title">I WILL HELP YOU TO:</h2>
+        <h2 class="help__title h6">I WILL HELP YOU TO:</h2>
 
-        <h3 class="help__subtitle">
+        <h3 class="help__subtitle h7">
           I invite you to my professional eyelash extension masterclasses.
         </h3>
 
-        <p class="help__text">
+        <p class="help__text p7">
           My goal is to help you develop your skills and explore new horizons in
           this field. Regardless of your experience, you will receive practical
           tools and knowledge necessary for achieving professional success. In
@@ -399,6 +429,7 @@
 
         <div class="help__thumb">
           <img
+            class="help__img"
             src="public/images/help.png"
             alt="photo lash technician"
             width="315"
@@ -408,51 +439,54 @@
       </section>
 
       <section class="course">
-        <h2 class="course__title">What you get with the cours:</h2>
+        <h2 class="course__title h8">What you get with the cours:</h2>
 
         <div class="course__inner">
-          <h3 class="course__subtitle">Online course</h3>
+          <h3 class="course__subtitle h9">Online course</h3>
 
-          <p class="course__desc">
+          <p class="course__desc p8">
             A convenient learning schedule that allows you to study at your own
             time and pace.
           </p>
 
-          <p class="course__desc">
+          <p class="course__desc p8">
             Full interactivity with instructors and fellow learners to receive
             support and a learning community.
           </p>
 
-          <p class="course__desc">
+          <p class="course__desc p8">
             In-depth knowledge and skills in your chosen field from experienced
             professionals.
           </p>
 
-          <p class="course__desc">
+          <p class="course__desc p8">
             Access to educational materials and resources to help expand your
             knowledge.
           </p>
 
-          <p class="course__desc">
+          <p class="course__desc p8">
             A certificate of successful course completion, confirming your
             competence in the field.
           </p>
         </div>
 
-        <button type="button" class="course__btn">Buy $290.00</button>
+        <a href="#registration" class="course__btn btn">Buy $290.00</a>
 
-        <p class="course__text">
-          Whether you are new or you are already a lash technician and want to
-          update or supplement your knowledge this curse is for you.
-        </p>
+        <div class="course__text-wrap">
+          <p class="course__text p6">
+            Whether you are new or you are already a lash technician and want to
+            update or supplement your knowledge this curse is for you.
+          </p>
 
-        <p class="course__text">
-          After taking this training, you will get the full knowledge of how to
-          do classic lash extensions.
-        </p>
+          <p class="course__text p6">
+            After taking this training, you will get the full knowledge of how
+            to do classic lash extensions.
+          </p>
+        </div>
 
         <div class="course__thumb">
           <img
+            class="course__img"
             src="public/images/course.png"
             alt="photo lash technician"
             width="375"
@@ -462,15 +496,17 @@
       </section>
 
       <section class="motivation">
-        <h3 class="motivation__title">
-          Embrace the journey of learning and watch your skills flourish as you
-          become a sought-after lash artist. Enroll now and let your passion for
-          beauty soar
-        </h3>
+        <div class="motivation__text">
+          <h3 class="motivation__title h10">
+            Embrace the journey of learning and watch your skills flourish as
+            you become a sought-after lash artist. Enroll now and let your
+            passion for beauty soar
+          </h3>
+        </div>
       </section>
 
       <section class="results">
-        <h2 class="results__title">STUDENT RESULTS:</h2>
+        <h2 class="results__title h6">STUDENT RESULTS:</h2>
 
         <!-- Slider -->
         <div class="swiper results__swiper">
@@ -479,12 +515,14 @@
             <div class="swiper-slide">
               <div class="results__pair">
                 <img
+                  class="result__img"
                   src="public/images/results1.1.png"
                   alt="student result"
                   width="315"
                   height="270"
                 />
                 <img
+                  class="result__img"
                   src="public/images/results1.2.png"
                   alt="student result"
                   width="315"
@@ -497,12 +535,14 @@
             <div class="swiper-slide">
               <div class="results__pair">
                 <img
+                  class="result__img"
                   src="public/images/results2.1.png"
                   alt="student result"
                   width="316"
                   height="270"
                 />
                 <img
+                  class="result__img"
                   src="public/images/results2.2.png"
                   alt="student result"
                   width="316"
@@ -515,12 +555,14 @@
             <div class="swiper-slide">
               <div class="results__pair">
                 <img
+                  class="result__img"
                   src="public/images/results3.1.png"
                   alt="student result"
                   width="315"
                   height="270"
                 />
                 <img
+                  class="result__img"
                   src="public/images/results3.2.png"
                   alt="student result"
                   width="315"
@@ -534,40 +576,238 @@
         <div class="results__nav">
           <button type="button" class="results__btn results__btn--prev">
             <img
+              class="results__btn-icon"
               src="public/icons/caret.svg"
               alt="arrow left"
-              width="32"
-              height="21"
+              width="21"
+              height="32"
             />
           </button>
           <button type="button" class="results__btn results__btn--next">
             <img
+              class="results__btn-icon"
               src="public/icons/caret.svg"
               alt="arrow right"
-              width="32"
-              height="21"
+              width="21"
+              height="32"
             />
           </button>
         </div>
       </section>
 
       <section class="academy">
-        <h2 class="academy__title">
-          Want to become a professional in eyelash extensions?
-        </h2>
+        <div class="academy__inner">
+          <h2 class="academy__title h11">
+            Want to become a professional in eyelash extensions?
+          </h2>
 
-        <p class="academy__text">
-          Register for our course right now! Learn modern techniques, gain
-          valuable experience, and receive a certificate. Start your journey
-          towards a successful career as an eyelash artist. Fill out the
-          registration form below and become a participant in the course!
-        </p>
+          <p class="academy__text p9">
+            Register for our course right now! Learn modern techniques, gain
+            valuable experience, and receive a certificate. Start your journey
+            towards a successful career as an eyelash artist. Fill out the
+            registration form below and become a participant in the course!
+          </p>
 
-        <button type="button" class="academy__btn">Registration</button>
+          <a href="#registration" class="academy__btn btn1">Registration</a>
+        </div>
+      </section>
+
+      <section class="faq">
+        <h2 class="faq__title h6">Frequently asked questions</h2>
+
+        <ul class="accordion-list accordion-container">
+          <li class="accordion-list__item ac">
+            <div class="accordion-header ac-trigger">
+              <h3 class="accordion-list__title h12">
+                What does the eyelash extension course program include?
+              </h3>
+
+              <img
+                src="public/icons/caret-down.svg"
+                alt="arrow"
+                width="26"
+                height="16"
+                class="accordion-header__icon"
+              />
+            </div>
+
+            <div class="accordion-body ac-panel">
+              <p class="accordion-body__text p11 ac-text">
+                The course program includes modern eyelash extension techniques,
+                practical sessions, the use of professional equipment, and
+                issuance of a certificate upon successful completion.
+              </p>
+            </div>
+          </li>
+
+          <li class="accordion-list__item ac">
+            <div class="accordion-header ac-trigger">
+              <h3 class="accordion-list__title h12">
+                How long does the course last, and what is the study schedule?
+              </h3>
+
+              <img
+                src="public/icons/caret-down.svg"
+                alt="arrow"
+                width="26"
+                height="16"
+                class="accordion-header__icon"
+              />
+            </div>
+
+            <div class="accordion-body ac-panel">
+              <p class="accordion-body__text p11 ac-text">
+                The eyelash extension course typically lasts from 3 to 5 days.
+                The study schedule can be either full-time or evening classes.
+              </p>
+            </div>
+          </li>
+
+          <li class="accordion-list__item ac">
+            <div class="accordion-header ac-trigger">
+              <h3 class="accordion-list__title h12">
+                Is there any practical training provided after completing the
+                course?
+              </h3>
+
+              <img
+                src="public/icons/caret-down.svg"
+                alt="arrow"
+                width="26"
+                height="16"
+                class="accordion-header__icon"
+              />
+            </div>
+
+            <div class="accordion-body ac-panel">
+              <p class="accordion-body__text p11 ac-text">
+                Yes, after successfully completing the course, students are
+                given the opportunity to practice on models under the
+                supervision of instructors.
+              </p>
+            </div>
+          </li>
+
+          <li class="accordion-list__item ac">
+            <div class="accordion-header ac-trigger">
+              <h3 class="accordion-list__title h12">
+                Will I receive a certificate after finishing the course?
+              </h3>
+
+              <img
+                src="public/icons/caret-down.svg"
+                alt="arrow"
+                width="26"
+                height="16"
+                class="accordion-header__icon"
+              />
+            </div>
+
+            <div class="accordion-body ac-panel">
+              <p class="accordion-body__text p11 ac-text">
+                Yes, participants who successfully complete the course will
+                receive an official certificate confirming their knowledge and
+                skills in eyelash extensions.
+              </p>
+            </div>
+          </li>
+
+          <li class="accordion-list__item ac">
+            <div class="accordion-header ac-trigger">
+              <h3 class="accordion-list__title h12">
+                Is prior experience required to enroll in the course?
+              </h3>
+
+              <img
+                src="public/icons/caret-down.svg"
+                alt="arrow"
+                width="26"
+                height="16"
+                class="accordion-header__icon"
+              />
+            </div>
+
+            <div class="accordion-body ac-panel">
+              <p class="accordion-body__text p11 ac-text">
+                No, prior experience is not required to enroll in the eyelash
+                extension course. The course is open to everyone who wishes to
+                learn this art and advance in the beauty industry.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section id="registration" class="registration">
+        <div class="registration__inner">
+          <div class="form-wrap">
+            <h2 class="registration__title h13">
+              Registration for Our Course!
+            </h2>
+
+            <p class="registration__text p12">Join Our Educational Event!</p>
+
+            <form class="registration__form">
+              <input
+                type="text"
+                autocomplete="name"
+                class="registration__input"
+                placeholder="Name"
+              />
+
+              <input
+                type="email"
+                autocomplete="email"
+                class="registration__input"
+                placeholder="Email"
+              />
+
+              <input
+                type="tel"
+                name="phone"
+                autocomplete="tel"
+                inputmode="tel"
+                maxlength="20"
+                class="registration__input registration__input--phone"
+                placeholder="Phone"
+              />
+
+              <button type="submit" class="registration__btn btn">
+                Register
+              </button>
+            </form>
+          </div>
+
+          <div class="registration__thumb">
+            <img
+              class="registration__img"
+              src="public/images/registration.png"
+              alt="registration"
+              width="347"
+              height="502"
+            />
+          </div>
+        </div>
       </section>
     </main>
 
+    <footer class="footer">
+      <a class="footer__logo-link" href="/" aria-label="Home">
+        <img
+          class="footer__logo"
+          src="public/images/logo.svg"
+          alt="Lumirelle Academy Logo"
+          width="140"
+          height="54"
+        />
+      </a>
+
+      <p class="footer__text p12">
+        &copy; 2026 Lumirelle Academy. All rights reserved.
+      </p>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
