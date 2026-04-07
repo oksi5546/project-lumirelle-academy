@@ -2,6 +2,6 @@
   "name": "project-lumirelle-academy",
   "private": true,
   "scripts": {
-    "build": "node -e \"require('fs').accessSync('index.html'); console.log('static ok')\""
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -R styles js public dist/"
   }
 }
