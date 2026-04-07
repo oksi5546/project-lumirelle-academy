@@ -45,12 +45,55 @@
   </head>
 
   <body>
+    <div class="menu">
+      <button
+        type="button"
+        class="menu__button p16 menu__button--about"
+        aria-label="About"
+      >
+        About
+      </button>
+
+      <button
+        type="button"
+        class="menu__button p16 menu__button--course"
+        aria-label="Course"
+      >
+        Course
+      </button>
+
+      <button
+        type="button"
+        class="menu__button p16 menu__button--sign-in"
+        aria-label="Sign in"
+      >
+        Sign in
+      </button>
+
+      <button
+        type="button"
+        class="menu__button p16 menu__button--contacts"
+        aria-label="contacts"
+      >
+        Contacts
+      </button>
+
+      <button
+        type="button"
+        class="menu__button-reg btn3 menu__button--registration"
+        aria-label="Registration"
+      >
+        Registration
+      </button>
+    </div>
+
     <header class="header">
       <button type="button" class="menu-button" aria-label="Open menu">
         <div class="menu-button__line"></div>
         <div class="menu-button__line"></div>
         <div class="menu-button__line"></div>
       </button>
+
       <a class="header__logo-link" href="/" aria-label="Home">
         <img
           class="header__logo"
@@ -72,7 +115,7 @@
       </a>
     </header>
 
-    <main>
+    <main id="home">
       <section class="hero">
         <h1 class="hero__title h1">CLASSIC LASH EXTENSION</h1>
 
@@ -102,7 +145,7 @@
         </p>
       </section>
 
-      <section class="about">
+      <section id="about" class="about">
         <h2 class="about__title h2">About:</h2>
 
         <p class="about__text p2">
@@ -438,7 +481,7 @@
         </div>
       </section>
 
-      <section class="course">
+      <section class="course" id="course">
         <h2 class="course__title h8">What you get with the cours:</h2>
 
         <div class="course__inner">
@@ -748,34 +791,39 @@
             <p class="registration__text p12">Join Our Educational Event!</p>
 
             <form class="registration__form">
-              <input
-                type="text"
-                autocomplete="name"
-                class="registration__input"
-                placeholder="Name"
-              />
+              <label class="registration__label">
+                <span class="registration__label-text p13">Name</span>
+                <input
+                  type="text"
+                  autocomplete="name"
+                  class="registration__input"
+                />
+              </label>
 
-              <input
-                type="email"
-                autocomplete="email"
-                class="registration__input"
-                placeholder="Email"
-              />
+              <label class="registration__label">
+                <span class="registration__label-text p13">Email</span>
+                <input
+                  type="email"
+                  autocomplete="email"
+                  class="registration__input"
+                />
+              </label>
 
-              <input
-                type="tel"
-                name="phone"
-                autocomplete="tel"
-                inputmode="tel"
-                maxlength="20"
-                class="registration__input registration__input--phone"
-                placeholder="Phone"
-              />
-
-              <button type="submit" class="registration__btn btn">
-                Register
-              </button>
+              <label class="registration__label">
+                <span class="registration__label-text p13">Phone</span>
+                <input
+                  type="tel"
+                  name="phone"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  maxlength="20"
+                  class="registration__input registration__input--phone"
+                />
+              </label>
             </form>
+            <button type="submit" class="registration__btn btn2">
+              To register
+            </button>
           </div>
 
           <div class="registration__thumb">
@@ -791,8 +839,8 @@
       </section>
     </main>
 
-    <footer class="footer">
-      <a class="footer__logo-link" href="/" aria-label="Home">
+    <footer id="contacts" class="footer">
+      <a class="footer__logo-link" href="#home" aria-label="Home">
         <img
           class="footer__logo"
           src="public/images/logo.svg"
@@ -802,9 +850,24 @@
         />
       </a>
 
-      <p class="footer__text p12">
-        &copy; 2026 Lumirelle Academy. All rights reserved.
+      <div class="footer__links">
+        <a class="footer__link" href="#home" aria-label="Home">
+          <p class="footer__link-text p14">Home</p>
+        </a>
+        <a class="footer__link" href="#course" aria-label="Course">
+          <p class="footer__link-text p14">Course</p>
+        </a>
+      </div>
+
+      <p class="footer__contact-info p15">
+        through the <span class="footer__contact-accent">web form</span><br />
+        or by phone at
+        <a class="footer__contact-link" href="tel:+15192085274">
+          +1(519)208-52-74</a
+        >
       </p>
+
+      <p class="footer__text p13">&copy; Copyright Bardot Academy 2023</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
