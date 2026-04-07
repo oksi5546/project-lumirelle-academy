@@ -112,3 +112,64 @@ bindMenuNav(".menu__button--course", "#course");
 bindMenuNav(".menu__button--sign-in", "#registration");
 bindMenuNav(".menu__button--contacts", "#contacts");
 bindMenuNav(".menu__button--registration", "#registration");
+
+const sendRegistrationToTelegram = async ({ name, email, phone }) => {
+  const cfg = window.TELEGRAM_CONFIG || {};
+  const payload = { name, email, phone };
+
+  if (cfg.proxyUrl) {
+    const res = await fetch(cfg.proxyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || res.statusText);
+    }
+    return;
+  }
+
+  throw new Error("Configure TELEGRAM_CONFIG.proxyUrl");
+};
+
+const registrationForm = document.querySelector("#registration-form");
+if (registrationForm) {
+  const submitBtn = registrationForm.querySelector('button[type="submit"]');
+
+  registrationForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fd = new FormData(registrationForm);
+    const name = String(fd.get("name") || "").trim();
+    const email = String(fd.get("email") || "").trim();
+    const phone = String(fd.get("phone") || "").trim();
+
+    if (!name || !email) {
+      window.alert("Please fill in name and email.");
+      return;
+    }
+
+    const prevLabel = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending…";
+    }
+
+    try {
+      await sendRegistrationToTelegram({ name, email, phone });
+      window.alert("Thank you! We will contact you soon.");
+      registrationForm.reset();
+    } catch (err) {
+      console.error(err);
+      window.alert(
+        "Could not send the form. Check Telegram settings or try again later."
+      );
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        if (prevLabel) submitBtn.textContent = prevLabel;
+      }
+    }
+  });
+}

@@ -790,12 +790,19 @@
 
             <p class="registration__text p12">Join Our Educational Event!</p>
 
-            <form class="registration__form">
+            <form
+              class="registration__form"
+              id="registration-form"
+              action="#"
+              method="post"
+            >
               <label class="registration__label">
                 <span class="registration__label-text p13">Name</span>
                 <input
                   type="text"
+                  name="name"
                   autocomplete="name"
+                  required
                   class="registration__input"
                 />
               </label>
@@ -804,7 +811,9 @@
                 <span class="registration__label-text p13">Email</span>
                 <input
                   type="email"
+                  name="email"
                   autocomplete="email"
+                  required
                   class="registration__input"
                 />
               </label>
@@ -820,10 +829,11 @@
                   class="registration__input registration__input--phone"
                 />
               </label>
+
+              <button type="submit" class="registration__btn btn2">
+                To register
+              </button>
             </form>
-            <button type="submit" class="registration__btn btn2">
-              To register
-            </button>
           </div>
 
           <div class="registration__thumb">
@@ -871,6 +881,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
+    <script src="js/telegram-config.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
