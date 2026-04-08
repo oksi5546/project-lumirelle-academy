@@ -53,6 +53,7 @@ if (phoneInput) {
 
 const menuButton = document.querySelector(".menu-button");
 const menu = document.querySelector(".menu");
+const body = document.body;
 
 /** Fallback if transitionend does not fire (matches .menu transform transition ~0.3s) */
 const MENU_SCROLL_FALLBACK_MS = 400;
@@ -62,11 +63,20 @@ const scrollToElement = (targetEl) => {
   window.scrollTo({ top, behavior: "smooth" });
 };
 
+const setMenuOpenState = (isOpen) => {
+  if (!menu) return;
+  menu.classList.toggle("is-open", isOpen);
+  menuButton?.classList.toggle("active", isOpen);
+  if (body) {
+    body.style.overflow = isOpen ? "hidden" : "";
+    body.style.touchAction = isOpen ? "none" : "";
+  }
+};
+
 const closeMenuThenScroll = (targetEl) => {
   if (!menu || !targetEl) return;
 
-  menu.classList.remove("is-open");
-  menuButton?.classList.remove("active");
+  setMenuOpenState(false);
 
   let scrolled = false;
   const runScroll = () => {
@@ -91,8 +101,8 @@ const closeMenuThenScroll = (targetEl) => {
 
 if (menuButton && menu) {
   menuButton.addEventListener("click", () => {
-    menu.classList.toggle("is-open");
-    menuButton.classList.toggle("active");
+    const isOpen = !menu.classList.contains("is-open");
+    setMenuOpenState(isOpen);
   });
 }
 
