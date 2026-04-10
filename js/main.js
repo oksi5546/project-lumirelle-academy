@@ -51,6 +51,78 @@ if (phoneInput) {
   });
 }
 
+/** local@host.tld — латиниця, цифри, типові символи; TLD від 2 літер */
+const REGISTRATION_EMAIL_REGEX =
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
+
+const registrationEmailPasses = (value) => {
+  const v = String(value || "").trim();
+  return v.length > 0 && REGISTRATION_EMAIL_REGEX.test(v);
+};
+
+const registrationFieldPasses = (input) => {
+  if (!input) return true;
+  const fieldName = input.getAttribute("name");
+  if (fieldName === "name") return input.value.trim().length > 0;
+  if (fieldName === "email") return registrationEmailPasses(input.value);
+  if (fieldName === "country") return input.value.trim().length > 0;
+  return true;
+};
+
+const syncRegistrationLabelFromInput = (input) => {
+  const label = input?.closest(".registration__label");
+  if (!label) return;
+  label.classList.toggle("error", !registrationFieldPasses(input));
+};
+
+const bindRegistrationFieldValidation = (form) => {
+  if (!form) return;
+  form
+    .querySelectorAll(
+      'input[name="name"], input[name="email"], input[name="country"]',
+    )
+    .forEach((input) => {
+      input.addEventListener("invalid", () => {
+        input.closest(".registration__label")?.classList.add("error");
+      });
+      input.addEventListener("input", () =>
+        syncRegistrationLabelFromInput(input),
+      );
+      input.addEventListener("change", () =>
+        syncRegistrationLabelFromInput(input),
+      );
+    });
+};
+
+const countryBtn = document.querySelector(".registration__country-button");
+const countryList = document.querySelector(".registration__country-list");
+const countryInput = document.querySelector(".registration__input--country");
+
+if (countryBtn && countryList) {
+  const setCountryDropdownOpen = (open) => {
+    countryList.classList.toggle("is-open", open);
+    countryBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  countryBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setCountryDropdownOpen(!countryList.classList.contains("is-open"));
+  });
+
+  countryList.addEventListener("click", (e) => {
+    const item = e.target.closest(".registration__country-item");
+    if (!item || !countryInput) return;
+    e.stopPropagation();
+    countryInput.value = item.textContent.trim();
+    syncRegistrationLabelFromInput(countryInput);
+    setCountryDropdownOpen(false);
+  });
+
+  document.addEventListener("click", () => {
+    setCountryDropdownOpen(false);
+  });
+}
+
 const menuButton = document.querySelector(".menu-button");
 const menu = document.querySelector(".menu");
 const body = document.body;
@@ -123,9 +195,9 @@ bindMenuNav(".menu__button--sign-in", "#registration");
 bindMenuNav(".menu__button--contacts", "#contacts");
 bindMenuNav(".menu__button--registration", "#registration");
 
-const sendRegistrationToTelegram = async ({ name, email, phone }) => {
+const sendRegistrationToTelegram = async ({ name, email, phone, country }) => {
   const cfg = window.TELEGRAM_CONFIG || {};
-  const payload = { name, email, phone };
+  const payload = { name, email, phone, country };
 
   if (cfg.proxyUrl) {
     const res = await fetch(cfg.proxyUrl, {
@@ -145,18 +217,32 @@ const sendRegistrationToTelegram = async ({ name, email, phone }) => {
 
 const registrationForm = document.querySelector("#registration-form");
 if (registrationForm) {
+  bindRegistrationFieldValidation(registrationForm);
+
   const submitBtn = registrationForm.querySelector('button[type="submit"]');
 
   registrationForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const nameInput = registrationForm.querySelector('[name="name"]');
+    const emailInput = registrationForm.querySelector('[name="email"]');
+    const countryField = registrationForm.querySelector('[name="country"]');
+
+    [nameInput, emailInput, countryField].forEach((input) => {
+      if (input) syncRegistrationLabelFromInput(input);
+    });
+
+    if (registrationForm.querySelector(".registration__label.error")) {
+      return;
+    }
+
     const fd = new FormData(registrationForm);
     const name = String(fd.get("name") || "").trim();
     const email = String(fd.get("email") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
+    const country = String(fd.get("country") || "").trim();
 
-    if (!name || !email) {
-      window.alert("Please fill in name and email.");
+    if (!name || !registrationEmailPasses(email) || !country) {
       return;
     }
 
@@ -167,14 +253,13 @@ if (registrationForm) {
     }
 
     try {
-      await sendRegistrationToTelegram({ name, email, phone });
-      window.alert("Thank you! We will contact you soon.");
+      await sendRegistrationToTelegram({ name, email, phone, country });
       registrationForm.reset();
+      registrationForm
+        .querySelectorAll(".registration__label.error")
+        .forEach((el) => el.classList.remove("error"));
     } catch (err) {
       console.error(err);
-      window.alert(
-        "Could not send the form. Check Telegram settings or try again later."
-      );
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

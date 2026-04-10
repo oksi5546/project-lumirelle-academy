@@ -22,6 +22,7 @@ module.exports = async function handler(req, res) {
   const name = String(body?.name ?? "").trim();
   const email = String(body?.email ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
+  const country = String(body?.country ?? "").trim();
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -35,6 +36,7 @@ module.exports = async function handler(req, res) {
     `Name: ${name}`,
     `Email: ${email}`,
     `Phone: ${phone}`,
+    `Country: ${country}`,
   ].join("\n");
 
   const tgRes = await fetch(
