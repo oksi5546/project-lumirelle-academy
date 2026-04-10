@@ -39,6 +39,11 @@
       href="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.css"
     /> -->
 
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css"
+    />
+
     <link rel="stylesheet" href="styles/reset.css" />
     <link rel="stylesheet" href="styles/typography.css" />
     <link rel="stylesheet" href="styles/main.css" />
@@ -803,7 +808,7 @@
                   name="name"
                   autocomplete="name"
                   required
-                  class="registration__input"
+                  class="registration__input p17"
                 />
               </label>
 
@@ -814,20 +819,16 @@
                   name="email"
                   autocomplete="email"
                   required
-                  class="registration__input"
+                  class="registration__input p17"
                 />
               </label>
 
-              <label class="registration__label">
+              <label class="registration__label registration__label--phone">
                 <span class="registration__label-text p13">Phone</span>
-                <input
-                  type="tel"
-                  name="phone"
-                  autocomplete="tel"
-                  inputmode="tel"
-                  maxlength="20"
-                  class="registration__input registration__input--phone"
-                />
+                <div
+                  class="registration__phone"
+                  id="registration-phone-root"
+                ></div>
               </label>
 
               <label class="registration__label">
@@ -840,7 +841,7 @@
                   readonly
                   tabindex="-1"
                   autocomplete="off"
-                  class="registration__input registration__input--country"
+                  class="registration__input registration__input--country p17"
                 />
 
                 <button
@@ -861,71 +862,7 @@
                 <div
                   class="registration__country-list"
                   id="registration-country-list"
-                >
-                  <button type="button" class="registration__country-item">
-                    Australia
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Austria
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Belgium
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Brazil
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Bulgaria
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Canada
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Czech Republic
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    France
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Germany
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Israel
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Italy
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Moldova
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Netherlands
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Poland
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Romania
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Spain
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Switzerland
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Turkey
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    Ukraine
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    United Kingdom
-                  </button>
-                  <button type="button" class="registration__country-item">
-                    United States
-                  </button>
-                </div>
+                ></div>
               </label>
 
               <button type="submit" class="registration__btn btn2">
@@ -979,7 +916,16 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
+    <script type="module">
+      import intlTelInputUtils from "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js";
+      window.intlTelInputUtils = intlTelInputUtils;
+      if (window.intlTelInput) {
+        window.intlTelInput.utils = intlTelInputUtils;
+      }
+      window.dispatchEvent(new Event("intl-tel-utils-ready"));
+    </script>
     <script src="js/telegram-config.js"></script>
-    <script src="js/main.js"></script>
+    <script defer src="js/main.js"></script>
   </body>
 </html>

@@ -551,6 +551,211 @@ body {
   box-shadow: 0 0 2.875rem 0 #5757571f;
 }
 
+.registration__phone {
+  margin-top: 0.5rem;
+}
+
+.registration__phone-row {
+  display: flex;
+  align-items: stretch;
+  width: 19.6875rem;
+  min-height: 3.125rem;
+  border-radius: 0.1875rem;
+  background-color: #f4eae0;
+  box-shadow: 0 0 2.875rem 0 #5757571f;
+  overflow: visible;
+}
+
+.registration__phone-code {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 2;
+}
+
+.registration__phone-code-button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 100%;
+  min-height: 3.125rem;
+  padding: 0 0.5rem 0 0.75rem;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.registration__phone-code-button:focus-visible {
+  outline: 2px solid var(--primary-text-color);
+  outline-offset: 2px;
+}
+
+.registration__phone-flag {
+  transform: scale(1.1);
+  flex-shrink: 0;
+}
+
+/* 6×6px при root 16px → 0.375rem; закрито — rotate(180deg), відкрито — 0° */
+.registration__phone-caret {
+  display: block;
+  flex-shrink: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  object-fit: contain;
+  transform: rotate(180deg);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.registration__label--phone:has(.registration__phone-code-list.is-open)
+  .registration__phone-caret {
+  transform: rotate(0deg);
+}
+
+.registration__phone-dial {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.registration__phone-national {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.9375rem 0.9375rem 0.9375rem 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.registration__phone-code-list {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 3;
+  width: min(19.6875rem, 92vw);
+  max-height: 270px;
+  margin-top: 0.25rem;
+  padding: 12px;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 2.875rem 0 #5757571f;
+  overflow: hidden;
+  background-color: #f0e7e0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.registration__phone-code-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d6d6d6;
+}
+
+.registration__phone-code-search-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  object-fit: contain;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.registration__phone-code-search {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  box-sizing: border-box;
+  padding: 0.25rem 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--primary-text-color);
+  -webkit-appearance: none;
+  appearance: none;
+  text-decoration: none;
+}
+
+.registration__phone-code-search::placeholder {
+  color: var(--primary-text-color);
+  opacity: 0.45;
+}
+
+.registration__phone-code-search:focus,
+.registration__phone-code-search:focus-visible {
+  outline: none;
+  text-decoration: none;
+}
+
+.registration__phone-code-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: none;
+}
+
+.registration__phone-code-list.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.registration__phone-code-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 10px 0;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid #d6d6d6;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--primary-text-color);
+}
+
+/* display:flex у кнопки перекриває стандартне приховування [hidden] */
+.registration__phone-code-item[hidden] {
+  display: none !important;
+}
+
+.registration__phone-code-item .iti__flag {
+  flex-shrink: 0;
+}
+
+.registration__phone-code-item-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.registration__phone-code-item-dial {
+  flex-shrink: 0;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
 .registration__input--country {
   pointer-events: none;
 }

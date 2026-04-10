@@ -21,37 +21,399 @@ try {
   console.warn("Accordion init:", err);
 }
 
-const phoneInput = document.querySelector(".registration__input--phone");
-if (phoneInput) {
-  const syncPhoneMask = () => {
-    const digits = phoneInput.value.replace(/\D/g, "");
-    if (!digits) {
-      phoneInput.value = document.activeElement === phoneInput ? "+" : "";
-    } else {
-      phoneInput.value = "+" + digits;
+function initRegistrationIntlPhone() {
+  const root = document.getElementById("registration-phone-root");
+  if (!root || !window.intlTelInputUtils || !window.intlTelInput) return;
+  if (root.dataset.intlPhoneInit === "1") return;
+  root.dataset.intlPhoneInit = "1";
+
+  const utils = window.intlTelInputUtils;
+  const intlTelInput = window.intlTelInput;
+  const { E164 } = utils.numberFormat;
+
+  const countries = intlTelInput
+    .getCountryData()
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name, "en"));
+
+  const defaultCountry =
+    countries.find((c) => c.iso2 === "ua") || countries[0] || null;
+  if (!defaultCountry) return;
+
+  let selected = {
+    iso2: defaultCountry.iso2,
+    dialCode: defaultCountry.dialCode,
+    name: defaultCountry.name,
+  };
+
+  const row = document.createElement("div");
+  row.className = "registration__phone-row";
+
+  const codeWrap = document.createElement("div");
+  codeWrap.className = "registration__phone-code";
+
+  const codeBtn = document.createElement("button");
+  codeBtn.type = "button";
+  codeBtn.className = "registration__phone-code-button";
+  codeBtn.setAttribute("aria-expanded", "false");
+  codeBtn.setAttribute("aria-haspopup", "listbox");
+  codeBtn.setAttribute("aria-controls", "registration-phone-code-list");
+
+  const flagEl = document.createElement("span");
+  flagEl.className = `registration__phone-flag iti__flag iti__${selected.iso2}`;
+  flagEl.setAttribute("aria-hidden", "true");
+
+  const caret = document.createElement("img");
+  caret.src = "public/icons/prapor.svg";
+  caret.alt = "";
+  caret.className = "registration__phone-caret";
+
+  const dialSpan = document.createElement("span");
+  dialSpan.className = "registration__phone-dial p17";
+  dialSpan.textContent = `+${selected.dialCode}`;
+
+  codeBtn.append(flagEl, caret, dialSpan);
+
+  const list = document.createElement("div");
+  list.className = "registration__phone-code-list";
+  list.id = "registration-phone-code-list";
+  list.setAttribute("role", "listbox");
+
+  const searchWrap = document.createElement("div");
+  searchWrap.className = "registration__phone-code-search-wrap";
+  const searchIcon = document.createElement("img");
+  searchIcon.src = "public/icons/search.svg";
+  searchIcon.alt = "";
+  searchIcon.className = "registration__phone-code-search-icon";
+  searchIcon.setAttribute("aria-hidden", "true");
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.setAttribute("inputmode", "search");
+  searchInput.className = "registration__phone-code-search p17";
+  searchInput.placeholder = "Country or code";
+  searchInput.setAttribute("autocomplete", "off");
+  searchInput.setAttribute(
+    "aria-label",
+    "Search country by name or calling code",
+  );
+  searchWrap.append(searchIcon, searchInput);
+
+  const listScroll = document.createElement("div");
+  listScroll.className = "registration__phone-code-list-scroll";
+
+  for (const c of countries) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "registration__phone-code-item";
+    item.dataset.iso2 = c.iso2;
+    item.setAttribute("role", "option");
+
+    const f = document.createElement("span");
+    f.className = `iti__flag iti__${c.iso2}`;
+    f.setAttribute("aria-hidden", "true");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "registration__phone-code-item-name";
+    nameSpan.textContent = c.name;
+
+    const dial = document.createElement("span");
+    dial.className = "registration__phone-code-item-dial";
+    dial.textContent = `+${c.dialCode}`;
+
+    item.append(f, nameSpan, dial);
+    listScroll.appendChild(item);
+  }
+
+  list.append(searchWrap, listScroll);
+
+  const normalizeForSearch = (s) => {
+    let x = String(s || "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+    try {
+      x = x.normalize("NFD").replace(/\p{M}/gu, "");
+    } catch {
+      /* старі браузери без Unicode property escapes */
+    }
+    return x.replace(/[''`’]/g, "");
+  };
+
+  const phoneSearchSynonymPhrase = {
+    us: "united states",
+    usa: "united states",
+    america: "united states",
+    uk: "united kingdom",
+    britain: "united kingdom",
+    england: "united kingdom",
+    uae: "united arab emirates",
+    emirates: "united arab emirates",
+    holland: "netherlands",
+  };
+
+  /** Рядок схожий лише на код (цифри / + / пробіли) — фільтр по префіксу dialCode */
+  const queryLooksLikeDialOnly = (trimmed) => {
+    const d = trimmed.replace(/\D/g, "");
+    if (!d) return false;
+    return !/[^\d\s+]/.test(trimmed);
+  };
+
+  const countryMatchesFilter = (c, trimmed) => {
+    if (!trimmed) return true;
+    const qNorm = normalizeForSearch(trimmed);
+    const qDigits = trimmed.replace(/\D/g, "");
+    const nameNorm = normalizeForSearch(c.name);
+    const dialStr = String(c.dialCode);
+    const words = nameNorm.split(/[\s,-]+/).filter(Boolean);
+
+    if (/^[a-z]{2}$/i.test(trimmed) && c.iso2.toLowerCase() === trimmed.toLowerCase()) {
+      return true;
+    }
+
+    if (queryLooksLikeDialOnly(trimmed)) {
+      return dialStr.startsWith(qDigits) || qDigits.startsWith(dialStr);
+    }
+
+    if (nameNorm.startsWith(qNorm)) return true;
+    if (words.some((w) => w.startsWith(qNorm))) return true;
+
+    const synPhrase = phoneSearchSynonymPhrase[qNorm];
+    if (synPhrase && nameNorm.includes(synPhrase)) return true;
+
+    for (const [alias, phrase] of Object.entries(phoneSearchSynonymPhrase)) {
+      if (alias.startsWith(qNorm) && nameNorm.includes(phrase)) return true;
+    }
+
+    return false;
+  };
+
+  const applyCountryFilter = (raw) => {
+    const trimmed = String(raw || "").trim();
+    for (const item of listScroll.querySelectorAll(
+      ".registration__phone-code-item",
+    )) {
+      const iso = item.dataset.iso2;
+      const c = countries.find((x) => x.iso2 === iso);
+      if (!c) continue;
+      const show = countryMatchesFilter(c, trimmed);
+      item.hidden = !show;
+      item.setAttribute("aria-hidden", show ? "false" : "true");
     }
   };
 
-  phoneInput.addEventListener("input", syncPhoneMask);
+  const national = document.createElement("input");
+  national.type = "tel";
+  national.className = "registration__phone-national p17";
+  national.setAttribute("inputmode", "tel");
+  national.setAttribute("autocomplete", "tel-national");
 
-  phoneInput.addEventListener("focus", () => {
-    if (phoneInput.value === "") {
-      phoneInput.value = "+";
-      requestAnimationFrame(() => {
-        const end = phoneInput.value.length;
-        phoneInput.setSelectionRange(end, end);
-      });
+  const hidden = document.createElement("input");
+  hidden.type = "hidden";
+  hidden.name = "phone";
+  hidden.value = "";
+
+  codeWrap.append(codeBtn, list);
+  row.append(codeWrap, national);
+  root.append(row, hidden);
+
+  /**
+   * Плейсхолдер лише національної частини (+код тільки зі списку в `.registration__phone-dial`).
+   * За замовчуванням — форма з libphonenumber без цифр; окремі країни — свій шаблон.
+   */
+  const NATIONAL_PLACEHOLDER_OVERRIDES = {
+    ua: "(..)...-..-..",
+  };
+
+  const exampleNationalToMask = (ex) => {
+    if (!ex) return "";
+    return String(ex).replace(/\d/g, "·");
+  };
+
+  const nationalMaskFromUtils = (iso) => {
+    try {
+      let ex = utils.getExampleNumber(
+        iso,
+        true,
+        utils.numberType.MOBILE,
+        true,
+      );
+      if (!ex) {
+        ex = utils.getExampleNumber(
+          iso,
+          true,
+          utils.numberType.FIXED_LINE_OR_MOBILE,
+          true,
+        );
+      }
+      return exampleNationalToMask(ex);
+    } catch {
+      return "";
     }
+  };
+
+  const updatePlaceholder = () => {
+    const iso = selected.iso2;
+    if (NATIONAL_PLACEHOLDER_OVERRIDES[iso]) {
+      national.placeholder = NATIONAL_PLACEHOLDER_OVERRIDES[iso];
+      return;
+    }
+    national.placeholder = nationalMaskFromUtils(iso) || "";
+  };
+
+  /** Лише національні цифри (без +коду); не зчитуємо з відформатованого поля — інакше «роздування» і 3 цифри з 1 натиску */
+  let nationalDigitBuffer = "";
+  let skipNationalInput = false;
+
+  const buildInternationalDigits = (digits) => {
+    const dc = String(selected.dialCode);
+    let d = digits.replace(/\D/g, "");
+    if (selected.iso2 === "ua" && d.startsWith("0")) {
+      d = d.slice(1);
+    }
+    return `+${dc}${d}`;
+  };
+
+  const renderNationalField = () => {
+    if (!nationalDigitBuffer) {
+      national.value = "";
+      hidden.value = "";
+      return;
+    }
+
+    const full = buildInternationalDigits(nationalDigitBuffer);
+
+    let displayNational = "";
+    try {
+      const ay = utils.formatNumberAsYouType(full, selected.iso2);
+      const prefix = `+${selected.dialCode}`;
+      const normalizedPrefix = ay.startsWith("+")
+        ? ay.match(/^\+\d+/)?.[0] || prefix
+        : prefix;
+      if (ay.startsWith(normalizedPrefix)) {
+        displayNational = ay.slice(normalizedPrefix.length).trim();
+      } else {
+        displayNational = ay.replace(/^\+\d{1,4}\s*/, "").trim();
+      }
+    } catch {
+      displayNational = nationalDigitBuffer;
+    }
+
+    let e164 = "";
+    try {
+      e164 = utils.formatNumber(full, selected.iso2, E164);
+    } catch {
+      e164 = full.replace(/\s/g, "");
+    }
+
+    skipNationalInput = true;
+    try {
+      national.value = displayNational;
+      hidden.value = e164;
+    } finally {
+      skipNationalInput = false;
+    }
+  };
+
+  const onNationalInput = (e) => {
+    if (skipNationalInput) return;
+
+    const it = e.inputType;
+
+    if (it === "insertText" && e.data) {
+      const added = e.data.replace(/\D/g, "");
+      if (added) nationalDigitBuffer += added;
+      renderNationalField();
+      return;
+    } else if (it === "insertFromPaste") {
+      nationalDigitBuffer = national.value.replace(/\D/g, "");
+    } else if (
+      it === "deleteContentBackward" ||
+      it === "deleteContentForward" ||
+      it === "deleteByCut"
+    ) {
+      nationalDigitBuffer = national.value.replace(/\D/g, "");
+    } else {
+      nationalDigitBuffer = national.value.replace(/\D/g, "");
+    }
+
+    renderNationalField();
+  };
+
+  const setPhoneCodeOpen = (open) => {
+    list.classList.toggle("is-open", open);
+    codeBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      searchInput.value = "";
+      applyCountryFilter("");
+      requestAnimationFrame(() => searchInput.focus());
+    } else {
+      searchInput.value = "";
+      applyCountryFilter("");
+    }
+  };
+
+  const selectCountry = (c) => {
+    if (!c) return;
+    selected = { iso2: c.iso2, dialCode: c.dialCode, name: c.name };
+    dialSpan.textContent = `+${c.dialCode}`;
+    flagEl.className = `registration__phone-flag iti__flag iti__${c.iso2}`;
+    nationalDigitBuffer = "";
+    national.value = "";
+    hidden.value = "";
+    updatePlaceholder();
+    setPhoneCodeOpen(false);
+  };
+
+  codeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setPhoneCodeOpen(!list.classList.contains("is-open"));
   });
 
-  phoneInput.addEventListener("blur", () => {
-    if (phoneInput.value === "+") {
-      phoneInput.value = "";
-    }
+  list.addEventListener("click", (e) => {
+    const item = e.target.closest(".registration__phone-code-item");
+    if (!item) return;
+    e.stopPropagation();
+    const iso = item.dataset.iso2;
+    const c = countries.find((x) => x.iso2 === iso);
+    selectCountry(c);
   });
+
+  const runCountrySearch = () => applyCountryFilter(searchInput.value);
+  searchInput.addEventListener("input", runCountrySearch);
+  searchInput.addEventListener("keyup", runCountrySearch);
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") e.preventDefault();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!codeWrap.contains(e.target)) setPhoneCodeOpen(false);
+  });
+
+  national.addEventListener("input", onNationalInput);
+
+  const form = root.closest("form");
+  form?.addEventListener("reset", () => {
+    selectCountry(defaultCountry);
+  });
+
+  updatePlaceholder();
 }
 
-/** local@host.tld — латиниця, цифри, типові символи; TLD від 2 літер */
+function whenIntlPhoneReady() {
+  if (window.intlTelInputUtils && window.intlTelInput) {
+    initRegistrationIntlPhone();
+    return;
+  }
+  window.addEventListener(
+    "intl-tel-utils-ready",
+    () => initRegistrationIntlPhone(),
+    { once: true },
+  );
+}
+
+whenIntlPhoneReady();
+
+/** Email (спрощена регулярка) */
 const REGISTRATION_EMAIL_REGEX =
   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
 
@@ -94,11 +456,36 @@ const bindRegistrationFieldValidation = (form) => {
     });
 };
 
+const COUNTRIES_JSON_URL = "public/data/countries-en.json";
+
+const fillRegistrationCountryList = async (listEl) => {
+  try {
+    const res = await fetch(COUNTRIES_JSON_URL);
+    if (!res.ok) throw new Error(res.statusText);
+    const names = await res.json();
+    if (!Array.isArray(names)) throw new Error("Invalid countries JSON");
+    const frag = document.createDocumentFragment();
+    for (const name of names) {
+      if (typeof name !== "string" || !name.trim()) continue;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "registration__country-item";
+      btn.textContent = name;
+      frag.appendChild(btn);
+    }
+    listEl.replaceChildren(frag);
+  } catch (err) {
+    console.error("Countries list:", err);
+  }
+};
+
 const countryBtn = document.querySelector(".registration__country-button");
 const countryList = document.querySelector(".registration__country-list");
 const countryInput = document.querySelector(".registration__input--country");
 
 if (countryBtn && countryList) {
+  fillRegistrationCountryList(countryList);
+
   const setCountryDropdownOpen = (open) => {
     countryList.classList.toggle("is-open", open);
     countryBtn.setAttribute("aria-expanded", open ? "true" : "false");
