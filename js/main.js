@@ -23,12 +23,20 @@ try {
 
 function initRegistrationIntlPhone() {
   const root = document.getElementById("registration-phone-root");
-  if (!root || !window.intlTelInputUtils || !window.intlTelInput) return;
+  if (
+    !root ||
+    !window.intlTelInputUtils ||
+    !window.intlTelInput ||
+    typeof window.IMask !== "function"
+  ) {
+    return;
+  }
   if (root.dataset.intlPhoneInit === "1") return;
   root.dataset.intlPhoneInit = "1";
 
   const utils = window.intlTelInputUtils;
   const intlTelInput = window.intlTelInput;
+  const IMask = window.IMask;
   const { E164 } = utils.numberFormat;
 
   const countries = intlTelInput
@@ -217,52 +225,45 @@ function initRegistrationIntlPhone() {
   root.append(row, hidden);
 
   /**
-   * Плейсхолдер лише національної частини (+код тільки зі списку в `.registration__phone-dial`).
-   * За замовчуванням — форма з libphonenumber без цифр; окремі країни — свій шаблон.
+   * intl-tel-input getCountryData() не містить рядка маски — шаблон беремо з libphonenumber
+   * (getExampleNumber) і передаємо в IMask: «0» = одна цифра, решта — літерали () - пробіл.
    */
-  const NATIONAL_PLACEHOLDER_OVERRIDES = {
-    ua: "(..)...-..-..",
+  const NATIONAL_MASK_PATTERN_OVERRIDES = {
+    ua: "(00)000-00-00",
   };
 
-  const exampleNationalToMask = (ex) => {
-    if (!ex) return "";
-    return String(ex).replace(/\d/g, "·");
-  };
-
-  const nationalMaskFromUtils = (iso) => {
+  const getNationalExampleString = (iso) => {
     try {
       let ex = utils.getExampleNumber(
         iso,
         true,
         utils.numberType.MOBILE,
-        true,
+        false,
       );
       if (!ex) {
         ex = utils.getExampleNumber(
           iso,
           true,
           utils.numberType.FIXED_LINE_OR_MOBILE,
-          true,
+          false,
         );
       }
-      return exampleNationalToMask(ex);
+      return ex ? String(ex) : "";
     } catch {
       return "";
     }
   };
 
-  const updatePlaceholder = () => {
-    const iso = selected.iso2;
-    if (NATIONAL_PLACEHOLDER_OVERRIDES[iso]) {
-      national.placeholder = NATIONAL_PLACEHOLDER_OVERRIDES[iso];
-      return;
+  const getImaskPatternForIso = (iso) => {
+    if (NATIONAL_MASK_PATTERN_OVERRIDES[iso]) {
+      return NATIONAL_MASK_PATTERN_OVERRIDES[iso];
     }
-    national.placeholder = nationalMaskFromUtils(iso) || "";
+    const ex = getNationalExampleString(iso);
+    const p = ex.replace(/\d/g, "0");
+    return p.length > 0 ? p : "000000000000000";
   };
 
-  /** Лише національні цифри (без +коду); не зчитуємо з відформатованого поля — інакше «роздування» і 3 цифри з 1 натиску */
-  let nationalDigitBuffer = "";
-  let skipNationalInput = false;
+  let phoneMask = null;
 
   const buildInternationalDigits = (digits) => {
     const dc = String(selected.dialCode);
@@ -273,70 +274,49 @@ function initRegistrationIntlPhone() {
     return `+${dc}${d}`;
   };
 
-  const renderNationalField = () => {
-    if (!nationalDigitBuffer) {
-      national.value = "";
+  const syncPhoneHidden = () => {
+    const digits = phoneMask?.unmaskedValue ?? "";
+    if (!digits) {
       hidden.value = "";
       return;
     }
-
-    const full = buildInternationalDigits(nationalDigitBuffer);
-
-    let displayNational = "";
-    try {
-      const ay = utils.formatNumberAsYouType(full, selected.iso2);
-      const prefix = `+${selected.dialCode}`;
-      const normalizedPrefix = ay.startsWith("+")
-        ? ay.match(/^\+\d+/)?.[0] || prefix
-        : prefix;
-      if (ay.startsWith(normalizedPrefix)) {
-        displayNational = ay.slice(normalizedPrefix.length).trim();
-      } else {
-        displayNational = ay.replace(/^\+\d{1,4}\s*/, "").trim();
-      }
-    } catch {
-      displayNational = nationalDigitBuffer;
-    }
-
+    const full = buildInternationalDigits(digits);
     let e164 = "";
     try {
       e164 = utils.formatNumber(full, selected.iso2, E164);
     } catch {
       e164 = full.replace(/\s/g, "");
     }
+    hidden.value = e164;
 
-    skipNationalInput = true;
-    try {
-      national.value = displayNational;
-      hidden.value = e164;
-    } finally {
-      skipNationalInput = false;
+    if (window.__DEBUG_REGISTRATION_PHONE) {
+      console.log("[registration phone]", {
+        country: selected.iso2,
+        dialCode: selected.dialCode,
+        imaskUnmasked: digits,
+        fullInternational: full,
+        hiddenInputE164: e164,
+        imaskPattern: getImaskPatternForIso(selected.iso2),
+      });
     }
   };
 
-  const onNationalInput = (e) => {
-    if (skipNationalInput) return;
-
-    const it = e.inputType;
-
-    if (it === "insertText" && e.data) {
-      const added = e.data.replace(/\D/g, "");
-      if (added) nationalDigitBuffer += added;
-      renderNationalField();
-      return;
-    } else if (it === "insertFromPaste") {
-      nationalDigitBuffer = national.value.replace(/\D/g, "");
-    } else if (
-      it === "deleteContentBackward" ||
-      it === "deleteContentForward" ||
-      it === "deleteByCut"
-    ) {
-      nationalDigitBuffer = national.value.replace(/\D/g, "");
-    } else {
-      nationalDigitBuffer = national.value.replace(/\D/g, "");
+  const setupNationalImask = () => {
+    if (phoneMask) {
+      phoneMask.destroy();
+      phoneMask = null;
     }
+    const pattern = getImaskPatternForIso(selected.iso2);
+    phoneMask = IMask(national, {
+      mask: pattern,
+      lazy: false,
+    });
+    phoneMask.on("accept", syncPhoneHidden);
+    syncPhoneHidden();
+  };
 
-    renderNationalField();
+  const updatePlaceholder = () => {
+    national.placeholder = "";
   };
 
   const setPhoneCodeOpen = (open) => {
@@ -357,9 +337,8 @@ function initRegistrationIntlPhone() {
     selected = { iso2: c.iso2, dialCode: c.dialCode, name: c.name };
     dialSpan.textContent = `+${c.dialCode}`;
     flagEl.className = `registration__phone-flag iti__flag iti__${c.iso2}`;
-    nationalDigitBuffer = "";
-    national.value = "";
     hidden.value = "";
+    setupNationalImask();
     updatePlaceholder();
     setPhoneCodeOpen(false);
   };
@@ -389,18 +368,21 @@ function initRegistrationIntlPhone() {
     if (!codeWrap.contains(e.target)) setPhoneCodeOpen(false);
   });
 
-  national.addEventListener("input", onNationalInput);
-
   const form = root.closest("form");
   form?.addEventListener("reset", () => {
     selectCountry(defaultCountry);
   });
 
+  setupNationalImask();
   updatePlaceholder();
 }
 
 function whenIntlPhoneReady() {
-  if (window.intlTelInputUtils && window.intlTelInput) {
+  if (
+    window.intlTelInputUtils &&
+    window.intlTelInput &&
+    typeof window.IMask === "function"
+  ) {
     initRegistrationIntlPhone();
     return;
   }
