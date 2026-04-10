@@ -570,9 +570,9 @@ body {
   display: block;
   width: 26px;
   height: 16px;
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
   transform-origin: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease-in-out;
 }
 
 .registration__label:has(.registration__country-list.is-open)
