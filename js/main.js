@@ -225,6 +225,9 @@ function initRegistrationIntlPhone() {
   root.append(row, hidden);
 
   /**
+   * Маска номера (IMask / шаблони нижче) — лише для вводу й розмітки поля.
+   * Валідація форми не змінює mask, lazy чи обробник accept — див. registrationPhonePasses + input на national.
+   *
    * intl-tel-input getCountryData() не містить рядка маски — шаблон беремо з libphonenumber
    * (getExampleNumber) і передаємо в IMask: «0» = одна цифра, решта — літерали () - пробіл.
    */
@@ -338,6 +341,7 @@ function initRegistrationIntlPhone() {
     dialSpan.textContent = `+${c.dialCode}`;
     flagEl.className = `registration__phone-flag iti__flag iti__${c.iso2}`;
     hidden.value = "";
+    hidden.dataset.phoneIso2 = selected.iso2;
     setupNationalImask();
     updatePlaceholder();
     setPhoneCodeOpen(false);
@@ -373,8 +377,16 @@ function initRegistrationIntlPhone() {
     selectCountry(defaultCountry);
   });
 
+  hidden.dataset.phoneIso2 = selected.iso2;
+
   setupNationalImask();
   updatePlaceholder();
+
+  const schedulePhoneLabelSync = () => {
+    queueMicrotask(() => syncRegistrationLabelFromInput(hidden));
+  };
+  national.addEventListener("input", schedulePhoneLabelSync);
+  national.addEventListener("change", schedulePhoneLabelSync);
 }
 
 function whenIntlPhoneReady() {
@@ -395,13 +407,42 @@ function whenIntlPhoneReady() {
 
 whenIntlPhoneReady();
 
-/** Email (спрощена регулярка) */
+/** Email: базова регулярка + перевірка міток домену та типових опечаток (.co/.con замість .com). */
 const REGISTRATION_EMAIL_REGEX =
   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
 
+/** Домени на кшталт gmail.co / gmail.con — часті опечатки до .com (не плутаємо з gmail.co.uk). */
+const REGISTRATION_WEBMAIL_TYPO_DOMAIN =
+  /^(gmail|yahoo|hotmail|outlook|live|icloud|mail)\.(co|con|cm|om)$/i;
+
 const registrationEmailPasses = (value) => {
   const v = String(value || "").trim();
-  return v.length > 0 && REGISTRATION_EMAIL_REGEX.test(v);
+  if (!v || !REGISTRATION_EMAIL_REGEX.test(v)) return false;
+  const at = v.lastIndexOf("@");
+  const domain = v.slice(at + 1).toLowerCase();
+  const labels = domain.split(".").filter(Boolean);
+  if (labels.length < 2) return false;
+  const tld = labels[labels.length - 1];
+  if (tld.length < 2) return false;
+  if (REGISTRATION_WEBMAIL_TYPO_DOMAIN.test(domain)) return false;
+  return true;
+};
+
+const registrationPhonePasses = (value, iso2) => {
+  const v = String(value || "").trim();
+  const country = String(iso2 || "").trim();
+  if (!v || !country) return false;
+  const u = window.intlTelInputUtils;
+  if (!u) return false;
+  try {
+    if (u.isValidNumber(v, country)) return true;
+    /* isValidNumber відсікає частину діапазонів (наприклад, «рандомні» але повної довжини) */
+    if (typeof u.isPossibleNumber === "function")
+      return u.isPossibleNumber(v, country);
+    return false;
+  } catch {
+    return false;
+  }
 };
 
 const registrationFieldPasses = (input) => {
@@ -410,6 +451,8 @@ const registrationFieldPasses = (input) => {
   if (fieldName === "name") return input.value.trim().length > 0;
   if (fieldName === "email") return registrationEmailPasses(input.value);
   if (fieldName === "country") return input.value.trim().length > 0;
+  if (fieldName === "phone")
+    return registrationPhonePasses(input.value, input.dataset.phoneIso2);
   return true;
 };
 
@@ -440,6 +483,75 @@ const bindRegistrationFieldValidation = (form) => {
 
 const COUNTRIES_JSON_URL = "public/data/countries-en.json";
 
+/** ~60 найвідоміших країн; назви як у `public/data/countries-en.json`. */
+const REGISTRATION_COUNTRIES = [
+  // Європа
+  "Ukraine",
+  "United Kingdom",
+  "Germany",
+  "France",
+  "Italy",
+  "Spain",
+  "Poland",
+  "Netherlands",
+  "Belgium",
+  "Austria",
+  "Switzerland",
+  "Sweden",
+  "Norway",
+  "Denmark",
+  "Finland",
+  "Ireland",
+  "Portugal",
+  "Greece",
+  "Czechia",
+  "Romania",
+  "Hungary",
+  "Croatia",
+  "Slovakia",
+  "Serbia",
+  "Bulgaria",
+  "Lithuania",
+  "Latvia",
+  "Estonia",
+  // Азія
+  "China",
+  "Japan",
+  "India",
+  "South Korea",
+  "Indonesia",
+  "Thailand",
+  "Vietnam",
+  "Philippines",
+  "Malaysia",
+  "Singapore",
+  "Turkey",
+  "Israel",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "Iran",
+  "Pakistan",
+  "Bangladesh",
+  "Kazakhstan",
+  "Taiwan",
+  "Iraq",
+  // Америки
+  "United States",
+  "Canada",
+  "Mexico",
+  "Brazil",
+  "Argentina",
+  "Chile",
+  "Colombia",
+  "Peru",
+  "Venezuela",
+  "Cuba",
+  "Dominican Republic",
+  "Puerto Rico",
+];
+
+const registrationCountrySet = new Set(REGISTRATION_COUNTRIES);
+
 const fillRegistrationCountryList = async (listEl) => {
   try {
     const res = await fetch(COUNTRIES_JSON_URL);
@@ -449,6 +561,7 @@ const fillRegistrationCountryList = async (listEl) => {
     const frag = document.createDocumentFragment();
     for (const name of names) {
       if (typeof name !== "string" || !name.trim()) continue;
+      if (!registrationCountrySet.has(name)) continue;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "registration__country-item";
@@ -597,9 +710,16 @@ if (registrationForm) {
     const emailInput = registrationForm.querySelector('[name="email"]');
     const countryField = registrationForm.querySelector('[name="country"]');
 
-    [nameInput, emailInput, countryField].forEach((input) => {
+    const phoneHidden = registrationForm.querySelector('input[name="phone"]');
+
+    [nameInput, emailInput, countryField, phoneHidden].forEach((input) => {
       if (input) syncRegistrationLabelFromInput(input);
     });
+    if (!phoneHidden) {
+      registrationForm
+        .querySelector(".registration__label--phone")
+        ?.classList.add("error");
+    }
 
     if (registrationForm.querySelector(".registration__label.error")) {
       return;
@@ -611,7 +731,7 @@ if (registrationForm) {
     const phone = String(fd.get("phone") || "").trim();
     const country = String(fd.get("country") || "").trim();
 
-    if (!name || !registrationEmailPasses(email) || !country) {
+    if (!name || !registrationEmailPasses(email) || !country || !phone) {
       return;
     }
 
