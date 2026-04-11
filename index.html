@@ -132,7 +132,7 @@
           height="293"
         />
 
-        <a class="hero__course-link" href="/">
+        <a class="hero__course-link" href="#course">
           <img
             class="hero__course-img"
             src="public/images/button.svg"
@@ -936,15 +936,15 @@
     <script src="https://unpkg.com/accordion-js@3.4.1/dist/accordion.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
     <script type="module">
-      import IMask from 'https://esm.sh/imask@7.6.1'
-      import intlTelInputUtils from 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js'
+      import IMask from "https://esm.sh/imask@7.6.1";
+      import intlTelInputUtils from "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js";
 
-      window.IMask = IMask.default ?? IMask
-      window.intlTelInputUtils = intlTelInputUtils
+      window.IMask = IMask.default ?? IMask;
+      window.intlTelInputUtils = intlTelInputUtils;
       if (window.intlTelInput) {
-        window.intlTelInput.utils = intlTelInputUtils
+        window.intlTelInput.utils = intlTelInputUtils;
       }
-      window.dispatchEvent(new Event('intl-tel-utils-ready'))
+      window.dispatchEvent(new Event("intl-tel-utils-ready"));
     </script>
     <script src="js/telegram-config.js"></script>
     <script defer src="js/main.js"></script>
