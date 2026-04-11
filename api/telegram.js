@@ -24,23 +24,10 @@ module.exports = async function handler(req, res) {
   const phone = String(body?.phone ?? "").trim();
   const country = String(body?.country ?? "").trim();
 
-  const emailOk = (() => {
-    const v = email;
-    if (!v) return false;
-    const re =
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
-    const typo =
-      /^(gmail|yahoo|hotmail|outlook|live|icloud|mail)\.(co|con|cm|om)$/i;
-    if (!re.test(v)) return false;
-    const at = v.lastIndexOf("@");
-    const domain = v.slice(at + 1).toLowerCase();
-    const labels = domain.split(".").filter(Boolean);
-    if (labels.length < 2) return false;
-    const tld = labels[labels.length - 1];
-    if (tld.length < 2) return false;
-    if (typo.test(domain)) return false;
-    return true;
-  })();
+  const emailOk =
+    /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(
+      email,
+    );
 
   if (!emailOk) {
     return res.status(400).json({ error: "Invalid email" });

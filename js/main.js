@@ -407,26 +407,13 @@ function whenIntlPhoneReady() {
 
 whenIntlPhoneReady();
 
-/** Email: базова регулярка + перевірка міток домену та типових опечаток (.co/.con замість .com). */
 const REGISTRATION_EMAIL_REGEX =
-  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/;
+  /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/;
 
-/** Домени на кшталт gmail.co / gmail.con — часті опечатки до .com (не плутаємо з gmail.co.uk). */
-const REGISTRATION_WEBMAIL_TYPO_DOMAIN =
-  /^(gmail|yahoo|hotmail|outlook|live|icloud|mail)\.(co|con|cm|om)$/i;
+const validateEmail = (email) =>
+  REGISTRATION_EMAIL_REGEX.test(String(email || "").trim());
 
-const registrationEmailPasses = (value) => {
-  const v = String(value || "").trim();
-  if (!v || !REGISTRATION_EMAIL_REGEX.test(v)) return false;
-  const at = v.lastIndexOf("@");
-  const domain = v.slice(at + 1).toLowerCase();
-  const labels = domain.split(".").filter(Boolean);
-  if (labels.length < 2) return false;
-  const tld = labels[labels.length - 1];
-  if (tld.length < 2) return false;
-  if (REGISTRATION_WEBMAIL_TYPO_DOMAIN.test(domain)) return false;
-  return true;
-};
+const registrationEmailPasses = (value) => validateEmail(value);
 
 const registrationPhonePasses = (value, iso2) => {
   const v = String(value || "").trim();
@@ -436,7 +423,6 @@ const registrationPhonePasses = (value, iso2) => {
   if (!u) return false;
   try {
     if (u.isValidNumber(v, country)) return true;
-    /* isValidNumber відсікає частину діапазонів (наприклад, «рандомні» але повної довжини) */
     if (typeof u.isPossibleNumber === "function")
       return u.isPossibleNumber(v, country);
     return false;
@@ -697,6 +683,32 @@ const sendRegistrationToTelegram = async ({ name, email, phone, country }) => {
   throw new Error("Configure TELEGRAM_CONFIG.proxyUrl");
 };
 
+const REGISTRATION_SUCCESS_STORAGE_KEY =
+  "lumirelle-academy-registration-success";
+
+const registrationFormSuccessEl = document.querySelector(
+  ".registration__form-success",
+);
+
+function showRegistrationSubmittedState() {
+  registrationFormSuccessEl?.classList.add("is-open");
+  try {
+    localStorage.setItem(REGISTRATION_SUCCESS_STORAGE_KEY, "1");
+  } catch {
+    /* quota / private mode */
+  }
+}
+
+if (registrationFormSuccessEl) {
+  try {
+    if (localStorage.getItem(REGISTRATION_SUCCESS_STORAGE_KEY) === "1") {
+      registrationFormSuccessEl.classList.add("is-open");
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 const registrationForm = document.querySelector("#registration-form");
 if (registrationForm) {
   bindRegistrationFieldValidation(registrationForm);
@@ -747,6 +759,7 @@ if (registrationForm) {
       registrationForm
         .querySelectorAll(".registration__label.error")
         .forEach((el) => el.classList.remove("error"));
+      showRegistrationSubmittedState();
     } catch (err) {
       console.error(err);
     } finally {
